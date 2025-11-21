@@ -1,0 +1,7 @@
+kafka-python
+hdfs
+pandas
+streamlit
+requests
+
+# pip install -r requirements.txt
