@@ -6,4 +6,6 @@ RUN pip install --no-cache-dir kafka-python hdfs pandas requests
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "-c", "import time; time.sleep(10**9)"]
+CMD ["python", "consumer.py"]
+
+# CMD ["python", "-c", "import time; time.sleep(10**9)"]

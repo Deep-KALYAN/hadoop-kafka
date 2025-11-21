@@ -4,4 +4,5 @@ WORKDIR /app
 COPY producer.py /app/producer.py
 RUN pip install --no-cache-dir kafka-python requests
 
-CMD ["python", "-c", "import time; time.sleep(10**9)"]
+CMD ["python", "producer.py"]
+# CMD ["python", "-c", "import time; time.sleep(10**9)"]

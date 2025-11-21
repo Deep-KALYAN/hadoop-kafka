@@ -2,6 +2,12 @@ import json
 import time
 import requests
 from kafka import KafkaProducer
+from kafka.errors import KafkaError
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Kafka configuration
 KAFKA_BROKER = 'kafka:9092'
@@ -9,12 +15,16 @@ TOPIC = 'opensky'
 
 # OpenSky API URL
 OPENSKY_URL = "https://opensky-network.org/api/states/all"
+try:
+    # Create Kafka producer
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BROKER,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    )
+    logger.info("Kafka producer created successfully")
+except KafkaError as e:
+    logger.error(f"Kafka connection error: {e}")
 
-# Create Kafka producer
-producer = KafkaProducer(
-    bootstrap_servers=KAFKA_BROKER,
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
 
 print("🚀 Producer started. Sending data to Kafka...")
 
@@ -32,7 +42,7 @@ while True:
     except Exception as e:
         print("❌ Error fetching/sending data:", e)
 
-    time.sleep(10)  # fetch every 10 seconds
+    time.sleep(30)  # fetch every 10 seconds
 
 
 
