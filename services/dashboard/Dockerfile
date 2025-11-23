@@ -2,7 +2,11 @@ FROM python:3.10-slim
 
 WORKDIR /app
 COPY dashboard.py /app/dashboard.py
-RUN pip install --no-cache-dir streamlit hdfs pandas
+# Copy plotly wheel dependencies
+COPY plotly_offline /app/plotly_offline
+RUN pip install --no-cache-dir streamlit hdfs pandas\
+    && pip install --no-cache-dir /app/plotly_offline/tenacity-*.whl \
+    && pip install --no-cache-dir /app/plotly_offline/plotly-*.whl
 EXPOSE 8501
 ENV PYTHONUNBUFFERED=1
 
