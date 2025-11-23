@@ -22,6 +22,9 @@ TOR_PROXIES = {
     "https": "socks5h://tor:9050"
 }
 
+# 10 minutes TTL for aircraft data
+TTL_SECONDS = 600
+
 # Kafka producer
 producer = KafkaProducer(
     bootstrap_servers=KAFKA_BROKER,
@@ -49,6 +52,12 @@ while True:
         states = data.get("states", [])
 
         print("Fetched:", len(states), "flights")
+        now = time.time()
+
+        # Cleanup old aircraft (memory protection)
+        stale = [icao for icao, ts in last_seen.items() if now - ts > TTL_SECONDS]
+        for icao in stale:
+            del last_seen[icao]
 
         new_count = 0
         for state in states:
@@ -66,4 +75,4 @@ while True:
     except Exception as e:
         logger.error(f"Error fetching/sending data: {e}")
 
-    time.sleep(30)
+    time.sleep(90)
